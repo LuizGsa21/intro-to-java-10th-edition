@@ -131,7 +131,7 @@ public class Exercise_27 extends Application {
             lblImageTitle.setContentDisplay(ContentDisplay.TOP);
             lblImageTitle.setPrefSize(200,  100);
 
-            // Set the font in the label and the text field
+            // Set the font in the lbl and the text field
             lblImageTitle.setFont(new Font("SansSerif", 16));
             taDescription.setFont(new Font("Serif", 14));
 
@@ -141,7 +141,7 @@ public class Exercise_27 extends Application {
             // Create a scroll pane to hold the text area
             ScrollPane scrollPane = new ScrollPane(taDescription);
 
-            // Place label and scroll pane in the border pane
+            // Place lbl and scroll pane in the border pane
             setLeft(lblImageTitle);
             setCenter(scrollPane);
             setPadding(new Insets(5, 5, 5, 5));

@@ -17,7 +17,7 @@ import javafx.stage.Stage;
  *  Write a program that demonstrates selecting items in a list.
  *  The program uses a combo box to specify a selection mode,
  *  as shown in Figure 16.43a. When you select items,
- *  they are displayed in a label below the list.
+ *  they are displayed in a lbl below the list.
  *
  * Created by luizsa on 9/27/14.
  */

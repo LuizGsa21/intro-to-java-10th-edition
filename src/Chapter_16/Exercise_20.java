@@ -20,11 +20,11 @@ import javafx.util.Duration;
  * (Count-up stopwatch) k
  * Write a program that simulates a stopwatch,
  * as shown in Figure 16.45a. When the user
- * clicks the Start button, the button’s label
+ * clicks the Start button, the button’s lbl
  * is changed to Pause, as shown in Figure 16.45b.
  * When the user clicks the Pause button, the button’s
- * label is changed to Resume, as shown in Figure 16.45c. The
- * Clear button resets the count to 0 and resets the button’s label to Start.
+ * lbl is changed to Resume, as shown in Figure 16.45c. The
+ * Clear button resets the count to 0 and resets the button’s lbl to Start.
  * Created by luizsa on 9/29/14.
  */
 public class Exercise_20 extends Application {

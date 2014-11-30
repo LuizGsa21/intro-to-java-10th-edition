@@ -111,7 +111,7 @@ public class Exercise_30 extends Application {
                 lblTitle.setText("A Consecutive Four Found!");
                 lblTitle.setTextFill(Color.BLUE);
 
-                // change consecutive four label background
+                // change consecutive four lbl background
                 for (int k = 0; k < cFIndexes.size(); k += 2) {
                     int i = cFIndexes.get(k);
                     int j = cFIndexes.get(k + 1);
