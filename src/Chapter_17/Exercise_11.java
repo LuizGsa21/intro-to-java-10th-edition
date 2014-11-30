@@ -84,27 +84,21 @@ public class Exercise_11  extends Application {
 
             long limit = file.length() / divisions + 1;
 
-            try {
-                try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
+            try (BufferedInputStream in = new BufferedInputStream(new FileInputStream(file))) {
 
-                    for (int i = 1; i <= divisions; i++) {
-                        int current = 0;
-                        try (BufferedOutputStream out =
-                                     new BufferedOutputStream(new FileOutputStream(new File(file.getAbsoluteFile() + "." + i)))) {
-                            int buffer;
-                            while (current++ < limit && (buffer = in.read()) != -1) {
-                                out.write(buffer);
-                            }
+                for (int i = 1; i <= divisions; i++) {
+                    int current = 0;
+                    try (BufferedOutputStream out =
+                                 new BufferedOutputStream(new FileOutputStream(new File(file.getAbsoluteFile() + "." + i)))) {
+                        int buffer;
+                        while (current++ < limit && (buffer = in.read()) != -1) {
+                            out.write(buffer);
                         }
-
                     }
-
-
                 }
             } catch (IOException ex) {
                 ex.printStackTrace();
             }
-
         }
     }
 }
