@@ -10,8 +10,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
-import javax.swing.*;
 import java.io.*;
 
 /**
