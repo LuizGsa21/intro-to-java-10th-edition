@@ -80,8 +80,7 @@ public class Exercise_13  extends Application {
             for (int i = 0; i < splitFiles.length; i++) {
                 splitFiles[i] = new File(targetFile.getAbsolutePath() + "." + (i + 1) );
                 if (!splitFiles[i].isFile()) {
-                    JOptionPane.showMessageDialog(null,
-                            splitFiles[i].getAbsolutePath() + " file not found.", "Invalid input", JOptionPane.ERROR_MESSAGE);
+                    System.out.println(splitFiles[i].getAbsolutePath() + " file not found.");
                 }
             }
 
@@ -99,12 +98,10 @@ public class Exercise_13  extends Application {
                     }
                 }
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(null, "Error combining files", "Invalid input", JOptionPane.ERROR_MESSAGE);
+                System.out.println("Error combining files");
             }
         }
     }
-
-
 
     public static void main(String[] args) {
         Application.launch(args);
