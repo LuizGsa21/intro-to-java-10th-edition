@@ -14,9 +14,9 @@ import java.io.IOException;
 public class BitOutputStream implements AutoCloseable {
 
     FileOutputStream out;
+    int bits; // bit buffer
+    int bitPos; // bitPos bit index, gets reset when bitPos == 8
 
-    char[] byteBuffer = new char[8]; // represents 8 bits
-    int index = 8;
 
     public BitOutputStream(File file) throws IOException {
         out = new FileOutputStream(file);
@@ -31,11 +31,16 @@ public class BitOutputStream implements AutoCloseable {
      * @throws IOException
      */
     public void writeBit(char bit) throws IOException {
-        byteBuffer[--index] = bit;
-        if (index == 0) {
-            out.write(Byte.parseByte(new String(byteBuffer), 2));
-            index = 8;
+        bits = bits << 1;
+
+        if (bit == '1')
+            bits = bits | 1;
+
+        if (++bitPos == 8) {
+            out.write(bits);
+            bitPos = 0;
         }
+
     }
 
 
@@ -47,9 +52,8 @@ public class BitOutputStream implements AutoCloseable {
      * @throws IOException
      */
     public void writeBit(String bit) throws IOException {
-        for (int i = bit.length() - 1; i >= 0; i--) {
+        for (int i = 0; i < bit.length(); i++)
             writeBit(bit.charAt(i));
-        }
     }
 
     /**
@@ -61,13 +65,14 @@ public class BitOutputStream implements AutoCloseable {
      */
     public void close() throws IOException {
 
-        if (index < 8) {
-            while (index >= 0) { // add leading zeros
-                byteBuffer[index--] = '0';
-            }
-            out.write(Byte.parseByte(new String(byteBuffer), 2));
+
+        if (bitPos > 0) {
+            bits = bits << 8 - bitPos; // add 0's to end of byte
+            out.write(bits);
         }
+
         out.close();
+
     }
 
 }
