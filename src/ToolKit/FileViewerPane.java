@@ -34,6 +34,7 @@ public class FileViewerPane extends BorderPane {
 
         // Member nodes custom settings
         tfFilePath.setPrefColumnCount(32);
+        taContent.setWrapText(true);
 
         // Adding panes to borderPane
         setTop(topPane);
