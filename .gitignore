@@ -6,3 +6,6 @@ src/text-files
 
 # Images
 src/image
+
+# Files created from exercises
+*.dat
