@@ -19,7 +19,7 @@ public class Exercise_11 {
     public static void main(String[] args) {
 
         Scanner input = new Scanner(System.in);
-        System.out.print("Enter a string: ");
+        System.out.print("Enter an integer: ");
         long n = input.nextLong();
         System.out.println(sumDigits(n));
 
