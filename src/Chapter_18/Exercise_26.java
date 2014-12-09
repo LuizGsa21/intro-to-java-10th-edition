@@ -7,7 +7,6 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
@@ -17,30 +16,34 @@ import javafx.stage.Stage;
  * Write a program that will find a path in a maze,
  * as shown in Figure 18.13a. The maze is represented
  * by an 8 * 8 board. The path must meet the following conditions:
- *
+ * <p>
  * The path is between the upper-left corner cell
  * and the lower-right corner cell in the maze.
- *
+ * <p>
  * The program enables the user to place or remove a mark on a cell.
  * A path consists of adjacent unmarked cells. Two cells are said to
  * be adjacent if they are horizontal or vertical neighbors,
  * but not if they are diagonal neighbors.
- *
+ * <p>
  * The path does not contain cells that form a square.
  * The path in Figure 18.13b, for example, does not meet
  * this condition. (The condition makes a path easy to
  * identify on the board.)
- *
+ * <p>
  * Created by Luiz Arantes Sa on 12/8/14.
  */
 public class Exercise_26 extends Application {
 
+    public static void main(String[] args) {
+        Application.launch(args);
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        MazePane pane = new MazePane(8,100);
+        MazePane pane = new MazePane(8, 100);
 
-        HBox hBox = new HBox(20, pane.btnFindPath, pane.btnClearPath);
+        HBox hBox = new HBox(20, pane.btnFindPath, pane.btnClearPath, pane.btnClearMarks);
         hBox.setAlignment(Pos.BASELINE_CENTER);
         hBox.setPadding(new Insets(10));
         BorderPane borderPane = new BorderPane(pane);
@@ -56,12 +59,13 @@ public class Exercise_26 extends Application {
 
     private class MazePane extends GridPane {
 
+        public Button btnFindPath = new Button("Find Path");
+        public Button btnClearPath = new Button("Clear Path");
+        public Button btnClearMarks = new Button("Clear Marks");
         SquarePane[][] squares;
         // Position
         int x;
         int y;
-        public Button btnFindPath = new Button("Find Path");
-        public Button btnClearPath = new Button("Clear Path");
 
 
         MazePane(int size, int width) {
@@ -75,38 +79,34 @@ public class Exercise_26 extends Application {
                 }
             }
 
-            btnClearPath.setOnMouseClicked(e-> clearPath());
-            btnFindPath.setOnAction(e-> findPath());
-
+            squares[0][0].setDisable(true);
+            squares[size - 1][size - 1].setDisable(true);
+            btnClearPath.setOnMouseClicked(e -> clearPath());
+            btnFindPath.setOnMouseClicked(e -> findPath());
+            btnClearMarks.setOnMouseClicked(e -> clearMarks());
             setPadding(new Insets(10));
-
-
-
         }
 
         private boolean findPath() {
-
-            squares[0][0].isFilled = true;
-            return findPath(0,0);
+            return findPath(0, 0);
         }
 
         private boolean findPath(int x, int y) {
 
             squares[y][x].isFilled = true;
 
-            if (isSquareRoute(x,y)) {
+            if (isSquareRoute(x, y)) {
                 squares[y][x].isFilled = false;
                 return false;
             }
             // finish line
-            if (x == squares[0].length - 1 && y == squares.length -1) {
-                squares[0][0].fillSquare();
+            if (x == squares[0].length - 1 && y == squares.length - 1) {
                 squares[y][x].fillSquare();
                 return true;
             }
 
             // right
-            if (x < squares.length - 1 && !squares[y][x + 1].isMarked() && !squares[y][x + 1].isFilled() ) {
+            if (x < squares.length - 1 && !squares[y][x + 1].isMarked() && !squares[y][x + 1].isFilled()) {
                 if (findPath(x + 1, y)) {
 
                     squares[y][x].fillSquare();
@@ -123,7 +123,7 @@ public class Exercise_26 extends Application {
             }
 
             // left
-            if (x > 0 && !squares[y][x - 1].isMarked() && !squares[y][x - 1].isFilled() ) {
+            if (x > 0 && !squares[y][x - 1].isMarked() && !squares[y][x - 1].isFilled()) {
                 if (findPath(x - 1, y)) {
                     squares[y][x].fillSquare();
                     return true;
@@ -138,21 +138,22 @@ public class Exercise_26 extends Application {
                 }
             }
 
-            // reset fill
+            // clearPath fill
             squares[y][x].isFilled = false;
 
             return false;
 
         }
 
+        // checks surrounding squares
         private boolean isSquareRoute(int x, int y) {
 
-            int count = 1;
+            int count = 1; // initial square
             if (y > 0 && x > 0 && squares[y - 1][x - 1].isFilled()) // up left
                 count++;
-            if (x < squares[0].length - 1 &&  y > 0 && squares[y - 1][x + 1].isFilled()) // up right
+            if (x < squares[0].length - 1 && y > 0 && squares[y - 1][x + 1].isFilled()) // up right
                 count++;
-            if (y < squares.length - 1 &&  x < squares[0].length - 1 && squares[y + 1][x + 1].isFilled()) // down right
+            if (y < squares.length - 1 && x < squares[0].length - 1 && squares[y + 1][x + 1].isFilled()) // down right
                 count++;
             if (x > 0 && y < squares.length - 1 && squares[y + 1][x - 1].isFilled()) // down left
                 count++;
@@ -160,9 +161,9 @@ public class Exercise_26 extends Application {
                 count++;
             if (x > 0 && squares[y][x - 1].isFilled())
                 count++;
-            if (y < squares.length -1  && squares[y + 1][x].isFilled())
+            if (y < squares.length - 1 && squares[y + 1][x].isFilled())
                 count++;
-            if (y > 0  && squares[y - 1][x].isFilled())
+            if (y > 0 && squares[y - 1][x].isFilled())
                 count++;
 
             return (count >= 4);
@@ -173,8 +174,18 @@ public class Exercise_26 extends Application {
             y = 0;
             for (int i = 0; i < squares.length; i++) {
                 for (int k = 0; k < squares[i].length; k++) {
-                    if (!squares[i][k].isMarked()) {
-                        squares[i][k].reset();
+                    squares[i][k].clearPath();
+                }
+            }
+        }
+
+        private void clearMarks() {
+            x = 0;
+            y = 0;
+            for (int i = 0; i < squares.length; i++) {
+                for (int k = 0; k < squares[i].length; k++) {
+                    if (squares[i][k].isMarked()) {
+                        squares[i][k].clearMark();
                     }
                 }
             }
@@ -188,16 +199,16 @@ public class Exercise_26 extends Application {
                 setPrefSize(size, size);
                 setStyle(
                         "-fx-border-color: black;" +
-                        "-fx-background-color: transparent;"
+                                "-fx-background-color: transparent;"
                 );
-                this.setOnMouseClicked(e-> toggleX());
+                this.setOnMouseClicked(e -> toggleX());
             }
 
             private void toggleX() {
 
                 ObservableList<Node> list = this.getChildren();
 
-                if (list.size() > 1) {
+                if (list.size() > 0) {
                     list.clear();
                 } else {
                     list.addAll(
@@ -211,6 +222,7 @@ public class Exercise_26 extends Application {
                 setStyle("-fx-background-color: blue; -fx-border-color: black;");
                 isFilled = true;
             }
+
             private boolean isMarked() {
                 return (getChildren().size() > 0);
             }
@@ -219,22 +231,14 @@ public class Exercise_26 extends Application {
                 return isFilled;
             }
 
-            private void reset() {
+            private void clearPath() {
                 setStyle("-fx-background-color: transparent; -fx-border-color: black");
                 isFilled = false;
-
-                if (isMarked()) {
-                    toggleX();
-                }
-
             }
 
+            private void clearMark() {
+                toggleX();
+            }
         }
     }
-
-    public static void main(String[] args) {
-        Application.launch(args);
-    }
-
-
 }
