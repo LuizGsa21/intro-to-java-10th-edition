@@ -3,13 +3,12 @@ package Chapter_18;
 import ToolKit.MyPoint;
 import javafx.application.Application;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderStroke;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.paint.Paint;
+import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
 
@@ -51,35 +50,75 @@ public class Exercise_32 extends Application {
         boolean[][] isTaken = new boolean[8][8];
         Polyline polyline = new Polyline();
         ArrayList<MyPoint> availablePath = new ArrayList<>(8);
-
-        Button btnReset = new Button("Reset");
+        int[] currentP = new int[2];
         int firstX;
         int firstY;
+        boolean isFirstMove = true;
+
+        Button btnReset = new Button("Reset");
+        Button btnSolve = new Button("Solve Using Brute-Force");
 
         ChessBoardPane() {
 
             GridPane gridPane = new GridPane();
+            gridPane.setPadding(new Insets(10));
+
+            boolean isBlack = false;
             for (int i = 0; i < squares.length; i++) {
                 for (int j = 0; j < squares[i].length; j++) {
 
-                    gridPane.add(squares[i][j] = new ChessSquare(), j, i);
+                    gridPane.add(squares[i][j] = new ChessSquare(isBlack), j, i);
                     squares[i][j].setPrefSize(80, 80);
                     int x = j;
                     int y = i;
                     squares[i][j].setOnMouseClicked(e -> {
-                        firstX = x;
-                        firstY = y;
-                        firstMove(x, y);
+
+                        if (isFirstMove) {
+                            firstX = x;
+                            firstY = y;
+                            currentP[0] = x;
+                            currentP[1] = y;
+                            isFirstMove = false;
+                            setPoint(x, y);
+                        } else {
+                            playerMove(x, y);
+                        }
+
                     });
+                    isBlack = !isBlack;
                 }
+                isBlack = !isBlack;
             }
 
-            getChildren().addAll(gridPane, polyline);
-            gridPane.setPadding(new Insets(10));
+            btnReset.setOnMouseClicked(e-> completeReset());
+            btnSolve.setOnMouseClicked(e-> solve());
+            BorderPane borderPane = new BorderPane(gridPane);
+            HBox hBox = new HBox(20, btnReset, btnSolve, new Label("Solving using brute force may take a minute..."));
+            hBox.setAlignment(Pos.BASELINE_CENTER);
+            hBox.setPadding(new Insets(10));
+            borderPane.setBottom(hBox);
+
+            getChildren().addAll(borderPane, polyline);
 
         }
 
+        private void playerMove(int x, int y) {
+            if (isValidMove(x, y)) {
+                squares[currentP[1]][currentP[0]].leavePathMark();
+                setPoint(x, y);
+                currentP[0] = x;
+                currentP[1] = y;
+            }
+
+        }
+
+        private void completeReset() {
+            resetChessBoard();
+            isFirstMove = true;
+        }
+
         private void resetChessBoard() {
+            isTaken = new boolean[8][8];
             for (ChessSquare[] square : squares) {
                 for (ChessSquare aSquare : square) {
                     aSquare.reset();
@@ -88,32 +127,38 @@ public class Exercise_32 extends Application {
             polyline.getPoints().clear();
         }
 
-        private void firstMove(int x, int y) {
-            setPoint(x, y);
+        private void solve() {
+            resetChessBoard();
+            setPoint(firstX, firstY); // draw first point
             boolean isSuccess = false;
 
-            int count = 0;
             while (!isSuccess) {
-                isSuccess = move(x, y);
+                isSuccess = move(firstX, firstY);
                 if (!isSuccess) {
-                    count++;
                     resetChessBoard();
-                    isTaken = new boolean[8][8];
                 }
             }
-
-            System.out.println("Total attempts: " + count);
 
         }
 
         private void setPoint(int x, int y) {
-            isTaken[y][x] = true;
             double x1 = x * 80.0 + 50;
             double y1 = y * 80.0 + 50;
-            squares[y][x].change();
+            squares[y][x].placeKnight();
             polyline.getPoints().addAll(x1, y1);
+            isTaken[y][x] = true;
         }
 
+        private boolean isValidMove(int x, int y) {
+            return (!isTaken[y][x] && (currentP[1] == y - 2 && x == currentP[0] - 1 ||  // 2 up 1 left
+                currentP[1] == y - 1 && currentP[0] == x - 2 || // 1 up 2 left
+                currentP[1] == y - 2 && currentP[0] == x - 1 || // 2 up 1 right
+                currentP[1] == y - 1 && currentP[0] == x + 2 || // 1 up 2 right
+                currentP[1] == y + 2 && currentP[0] == x - 1 || // 2 down 1 left
+                currentP[1] == y + 1 && currentP[0] == x - 2 || // 1 down 2 left
+                currentP[1] == y + 1 && currentP[0] == x + 2 || // 1 down 2 right
+                currentP[1] == y + 2 && currentP[0] == x + 1));  // 2 down 1 right
+        }
         private boolean move(int x, int y) {
 
             availablePath.clear();
@@ -141,24 +186,20 @@ public class Exercise_32 extends Application {
 
             }
 
-
             return isSuccess();
         }
 
         private boolean isSuccess() {
 
-            int count = 0;
             boolean isSuccess = true;
             for (int i = 0; i < isTaken.length; i++) {
                 for (int j = 0; j < isTaken[i].length; j++) {
                     if (!isTaken[i][j]) {
-                        count++;
                         isSuccess = false;
                     }
                 }
             }
 
-            System.out.println("Squares missed = " + count);
             return isSuccess;
         }
 
@@ -166,18 +207,34 @@ public class Exercise_32 extends Application {
 
         private class ChessSquare extends Pane {
 
-            ChessSquare() {
+            boolean isBlack;
+            ChessSquare(boolean isBlack) {
+                this.isBlack = isBlack;
                 reset();
+
             }
 
             private void reset() {
-                setStyle("-fx-border-color: black; -fx-background-color: transparent");
+                if (isBlack) {
+                    setStyle("-fx-border-color: black; -fx-background-color: black");
+
+                } else {
+                    setStyle("-fx-border-color: black; -fx-background-color: gray");
+                }
             }
 
-            private void change() {
+            private void placeKnight() {
+                setStyle("-fx-border-color: black;");
+                setBackground(
+                        new Background(
+                                new BackgroundImage(
+                                        new Image("image/knight.jpg"), null, null, null,
+                                        new BackgroundSize(100, 100, true, true, true, true))));
+            }
+
+            private void leavePathMark() {
                 setStyle("-fx-border-color: black; -fx-background-color: blue");
             }
-
 
         }
 
