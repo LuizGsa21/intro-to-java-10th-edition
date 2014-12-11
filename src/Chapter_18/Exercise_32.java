@@ -44,7 +44,7 @@ public class Exercise_32 extends Application {
 
     }
 
-    private class ChessBoardPane extends Pane {
+    public class ChessBoardPane extends Pane {
 
         ChessSquare[][] squares = new ChessSquare[8][8];
         boolean[][] isTaken = new boolean[8][8];
