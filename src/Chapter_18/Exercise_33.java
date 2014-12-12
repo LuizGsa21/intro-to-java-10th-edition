@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polyline;
 import javafx.stage.Stage;
@@ -53,6 +54,8 @@ public class Exercise_33 extends Application {
         ChessSquare knight = new ChessSquare(true);
 
         PathTransition path = new PathTransition();
+        Line line = new Line();
+
 
         Button btnReset = new Button("Reset");
         Button btnSolve = new Button("Solve Using Brute-Force");
@@ -100,19 +103,25 @@ public class Exercise_33 extends Application {
             hBox.setPadding(new Insets(10));
             borderPane.setBottom(hBox);
 
-            getChildren().addAll(borderPane, polyline, knight);
-            knight.setVisible(false);
+            toggleKnight();
+            getChildren().addAll(borderPane, polyline, line, knight);
+            polyline.setStroke(Color.RED);
+            line.setStroke(Color.ORANGE);
         }
 
         private void playerMove(int x, int y) {
             if (isValidMove(x, y)) {
-
                 squares[currentP[1]][currentP[0]].leavePathMark();
                 setPoint(x, y);
                 currentP[0] = x;
                 currentP[1] = y;
             }
 
+        }
+
+        private void toggleKnight() {
+            line.setVisible(!line.isVisible());
+            knight.setVisible(!knight.isVisible());
         }
 
         private void completeReset() {
@@ -151,23 +160,21 @@ public class Exercise_33 extends Application {
             isTaken[y][x] = true;
             int last = polyline.getPoints().size() - 1;
             if (last >= 3) {
-                Line line = new Line();
                 line.setStartX(polyline.getPoints().get(last - 3));
                 line.setStartY(polyline.getPoints().get(last - 2));
                 line.setEndX(polyline.getPoints().get(last - 1));
                 line.setEndY(polyline.getPoints().get(last));
-                getChildren().addAll(line);
 
                 path.setPath(line);
                 path.setNode(knight);
                 path.setCycleCount(1);
-                path.setDuration(Duration.seconds(3));
-                knight.setVisible(true);
+                path.setDuration(Duration.seconds(1));
+                toggleKnight();
                 path.play();
-                path.setOnFinished(e -> {
-                    getChildren().remove(line);
-                    squares[y][x].placeKnight();
 
+                path.setOnFinished(e -> {
+                    squares[y][x].placeKnight();
+                    toggleKnight();
                 });
             }
         }
