@@ -76,22 +76,19 @@ public class Exercise_38 extends Application {
         private void draw() {
 
             pane.getChildren().clear();
-            length =  50;
-
-
-            Line line = new Line(200,  400, 200, 300);
-            pane.getChildren().add(line);
-
-            draw(line.getEndX(), line.getEndY(), 90, length, order);
+            length =  60;
+            draw(200, 300, 90, length, order);
         }
 
-        final int ANGLE = 25;
+        final int ANGLE = 25 ;
         private void draw(double x, double y, double angle, double length, int order) {
+
             if (order <= 0) return;
-            double x2 = x + length * Math.cos(Math.toRadians(angle + ANGLE));
-            double y2 = y - length * Math.sin(Math.toRadians(angle + ANGLE));
-            double x3 = x + length * Math.cos(Math.toRadians(angle - ANGLE));
-            double y3 = y - length * Math.sin(Math.toRadians(angle - ANGLE));
+
+            double x2 = x + length * Math.cos(Math.toRadians(angle));
+            double y2 = y - length * Math.sin(Math.toRadians(angle));
+            double x3 = x + length * Math.cos(Math.toRadians(angle));
+            double y3 = y - length * Math.sin(Math.toRadians(angle));
             pane.getChildren().add(new Line(x, y, x2, y2));
             pane.getChildren().add(new Line(x, y, x3, y3));
 
