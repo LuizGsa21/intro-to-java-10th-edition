@@ -66,21 +66,28 @@ public class Exercise_27 extends Application {
 
             tfOrder.setOnKeyPressed(e -> {
 
-                if (e.getCode() == KeyCode.ENTER) {
 
+                if (e.getCode() == KeyCode.ENTER) {
                     try {
                         order = Integer.parseInt(tfOrder.getText());
                     } catch (NumberFormatException ex) {
-                        tfOrder.setText("0");
                         order = 0;
-
+                        tfOrder.setText("0");
                     }
-                    draw();
+                } else if (e.getCode() == KeyCode.UP) {
+                    order = Integer.parseInt(tfOrder.getText()) + 1;
+                    tfOrder.setText(order + "");
+
+                } else if (e.getCode() == KeyCode.DOWN) {
+                    order = Math.max(Integer.parseInt(tfOrder.getText()) - 1, 0);
+                    tfOrder.setText(order + "");
+
                 }
+                draw();
 
             });
 
-
+            tfOrder.setText("0");
             pane.setPrefSize(400, 400);
             setCenter(pane);
             setMargin(pane, new Insets(100));
