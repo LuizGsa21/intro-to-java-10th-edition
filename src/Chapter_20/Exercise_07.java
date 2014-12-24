@@ -243,7 +243,7 @@ public class Exercise_07 extends Application {
                     lblMessage.setText("You lost! Press enter to try again.");
                     isPlaying = false; // Player can't make a guess until he presses enter
                 } else {
-                    lblMessage.setText(ch + " is incorrect guess! \nYou have " + (incorrectGuess.size() - THRESHOLD) + " lives left.");
+                    lblMessage.setText(ch + " is incorrect guess! \nYou have " + (THRESHOLD - incorrectGuess.size()) + " lives left.");
                 }
                 lblMissedLetters.setText(lblMissedLetters.getText() + Character.toLowerCase(ch));
                 drawHangman(incorrectGuess.size()); // draw hangman
