@@ -1,6 +1,5 @@
 package Chapter_20;
 
-import java.util.Collections;
 import java.util.PriorityQueue;
 
 /**
@@ -14,7 +13,7 @@ public class Exercise_12 {
 
     public static void main(String[] args) {
 
-        MyPriorityQueue<String> queue = new MyPriorityQueue<String>();
+        MyPriorityQueue<String> queue = new MyPriorityQueue<>();
         queue.offer("1");
         queue.offer("2");
         queue.offer("3");
@@ -30,7 +29,6 @@ public class Exercise_12 {
     }
 
     static class MyPriorityQueue<E> extends PriorityQueue<E> implements Cloneable {
-
 
         @Override
         public Object clone() throws CloneNotSupportedException {
