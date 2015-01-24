@@ -48,15 +48,16 @@ public class Exercise_14 {
         double num1 = postfix.pop();
         switch (operator) {
             case '+':
-                postfix.push(num2 + num1); break;
+                postfix.push(num1 + num2); break;
             case '-':
-                postfix.push(num2 - num1); break;
+                postfix.push(num1 - num2); break;
             case '/':
-                postfix.push(num2 / num1); break;
+                postfix.push(num1 / num2); break;
             case '*':
-                postfix.push(num2 * num1); break;
+                postfix.push(num1 * num2); break;
         }
     }
+
     private static boolean isOperator(char ch) {
         return (ch == '/' ||
                 ch == '+' ||

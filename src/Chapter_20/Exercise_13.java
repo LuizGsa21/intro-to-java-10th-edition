@@ -1,5 +1,6 @@
 package Chapter_20;
 
+import ToolKit.PostfixNotation;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -36,26 +37,77 @@ public class Exercise_13 extends Application {
 
     int[] validNumbers = new int[4];
 
-    private static void processOperator(Stack<Integer> operandStack, Stack<Character> operatorStack) {
+    @Override
+    public void start(Stage primaryStage) {
 
-        int num2 = operandStack.pop();
-        char operator = operatorStack.pop();
-        int num1 = operandStack.pop();
+        // Top pane
+        Button btRefresh = new Button("Shuffle");
+        Label lblStatus = new Label("");
+        HBox topPane = new HBox(lblStatus, btRefresh);
+        topPane.setAlignment(Pos.BASELINE_RIGHT);
+        topPane.setSpacing(10);
 
-        switch (operator) {
-            case '+':
-                operandStack.push(num1 + num2);
-                break;
-            case '-':
-                operandStack.push(num1 - num2);
-                break;
-            case '*':
-                operandStack.push(num1 * num2);
-                break;
-            case '/':
-                operandStack.push(num1 / num2);
-                break;
+        // Center Pane
+        HBox centerPane = new HBox();
+        centerPane.setAlignment(Pos.CENTER);
+        centerPane.setSpacing(10);
+        centerPane.setPadding(new Insets(10));
+        // set first 4 random cards
+        setRandomCards(centerPane);
+
+        // Bottom pane
+        TextField tfExpression = new TextField();
+        Label lblExpression = new Label("Enter an expression:");
+        Button btVerify = new Button("Verify");
+        HBox bottomPane = new HBox(10, lblExpression, tfExpression, btVerify);
+
+        // Container Pane
+        BorderPane borderPane = new BorderPane();
+        borderPane.setPadding(new Insets(10));
+        borderPane.setTop(topPane);
+        borderPane.setCenter(centerPane);
+        borderPane.setBottom(bottomPane);
+
+        // Listeners
+        btRefresh.setOnAction(e -> {
+            lblStatus.setText("");
+            setRandomCards(centerPane);
+        });
+        btVerify.setOnAction(e -> {
+
+            String expression = tfExpression.getText();
+            if (isValid(expression) && isCorrect(expression)) {
+                lblStatus.setText("Good job! " + expression + " = 24");
+            } else {
+                lblStatus.setText("Invalid Expression");
+            }
+        });
+
+        Scene scene = new Scene(borderPane);
+        primaryStage.setTitle("4 Random Cards");
+        primaryStage.setScene(scene);
+        primaryStage.show();
+
+        // Debug
+    }
+
+    private void setRandomCards(HBox pane) {
+        boolean[] usedCards = new boolean[52];
+
+        // choose 4 random distinct cards from the deck
+        int count = 0;
+        pane.getChildren().clear();
+        while (count < 4) {
+            int card = (int) (Math.random() * 52);
+            if (!usedCards[card]) {
+                usedCards[card] = true;
+                pane.getChildren().add(new ImageView(new Image("image/card/" + (++card) + ".png")));
+                int value = card % 13;
+                validNumbers[count] = (value == 0) ? 13 : value;
+                count++;
+            }
         }
+
     }
 
     private static boolean isOperator(char ch) {
@@ -98,72 +150,13 @@ public class Exercise_13 extends Application {
 
     }
 
-    public static void main(String[] args) {
-        Application.launch(args);
-
+    private boolean isCorrect(String infixExpression) {
+        return (24 == PostfixNotation.evaluateInfix(infixExpression));
     }
 
-    @Override
-    public void start(Stage primaryStage) {
+    private boolean isValid(String infixExpression) {
 
-        // Top pane
-        Button btRefresh = new Button("Shuffle");
-        Label lblStatus = new Label("");
-        HBox topPane = new HBox(lblStatus, btRefresh);
-        topPane.setAlignment(Pos.BASELINE_RIGHT);
-        topPane.setSpacing(10);
-
-        // Center Pane
-        HBox centerPane = new HBox();
-        centerPane.setAlignment(Pos.CENTER);
-        centerPane.setSpacing(10);
-        centerPane.setPadding(new Insets(10));
-        // set first 4 random cards
-        setRandomCards(centerPane);
-
-        // Bottom pane
-        TextField tfExpression = new TextField();
-        Label lblExpression = new Label("Enter an expression:");
-        Button btVerify = new Button("Verify");
-        HBox bottomPane = new HBox(10, lblExpression, tfExpression, btVerify);
-
-        // Container Pane
-        BorderPane borderPane = new BorderPane();
-        borderPane.setPadding(new Insets(10));
-        borderPane.setTop(topPane);
-        borderPane.setCenter(centerPane);
-        borderPane.setBottom(bottomPane);
-
-        // Listeners
-        btRefresh.setOnAction(e -> {
-            lblStatus.setText("");
-            setRandomCards(centerPane);
-        });
-        btVerify.setOnAction(e -> {
-
-            String expression = tfExpression.getText();
-            String[] tokens = separateExpression(expression);
-            if (isValid(tokens) && isCorrect(tokens)) {
-                lblStatus.setText("Good job! " + expression + " = 24");
-            } else {
-                lblStatus.setText("Invalid Expression");
-            }
-        });
-
-        Scene scene = new Scene(borderPane);
-        primaryStage.setTitle("4 Random Cards");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-
-        // Debug
-    }
-
-    private boolean isCorrect(String[] tokens) {
-        return (24 == evaluateExpression(tokens));
-    }
-
-    private boolean isValid(String[] tokens) {
-
+        String[] tokens = separateExpression(infixExpression);
         // Check is tokens contains any letters
         for (String s : tokens) {
             for (char ch : s.toCharArray()) {
@@ -201,70 +194,8 @@ public class Exercise_13 extends Application {
         return true;
     }
 
-    private void setRandomCards(HBox pane) {
-        boolean[] usedCards = new boolean[52];
+    public static void main(String[] args) {
+        Application.launch(args);
 
-        // choose 4 random distinct cards from the deck
-        int count = 0;
-        pane.getChildren().clear();
-        while (count < 4) {
-            int card = (int) (Math.random() * 52);
-            if (!usedCards[card]) {
-                usedCards[card] = true;
-                pane.getChildren().add(new ImageView(new Image("image/card/" + (++card) + ".png")));
-                int value = card % 13;
-                validNumbers[count] = (value == 0) ? 13 : value;
-                count++;
-            }
-        }
-
-    }
-
-    private Integer evaluateExpression(String[] tokens) {
-
-        Stack<Integer> operandStack = new Stack<>();
-        Stack<Character> operatorStack = new Stack<>();
-
-        for (String token : tokens) {
-            char operator = token.charAt(0);
-
-            switch (operator) {
-                case '+':
-                case '-':
-                    while (!operatorStack.isEmpty() && isArithmeticOperator(operatorStack.peek())) {
-                        processOperator(operandStack, operatorStack);
-                    }
-                    operatorStack.push(operator);
-                    break;
-                case '*':
-                case '/':
-                    while (!operatorStack.isEmpty() &&
-                            (operatorStack.peek() == '*' || operatorStack.peek() == '/')) {
-                        processOperator(operandStack, operatorStack);
-                    }
-                    operatorStack.push(operator);
-                    break;
-                case ')':
-                    while (!operatorStack.isEmpty() &&
-                            operatorStack.peek() != '(') {
-                        processOperator(operandStack, operatorStack);
-                    }
-                    operatorStack.pop(); // pop '('
-                    break;
-                case '(':
-                    operatorStack.push(operator);
-                    break;
-                default:
-                    operandStack.push(Integer.parseInt(token));
-
-            }
-
-        }
-
-        while (!operatorStack.isEmpty() && isArithmeticOperator(operatorStack.peek())) {
-            processOperator(operandStack, operatorStack);
-        }
-
-        return operandStack.pop();
     }
 }
