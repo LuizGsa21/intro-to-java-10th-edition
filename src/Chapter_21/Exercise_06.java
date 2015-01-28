@@ -1,7 +1,7 @@
 package Chapter_21;
 
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -22,47 +22,26 @@ public class Exercise_06 {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Enter random integers.\nEnter 0 when finished: ");
 
-        HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> occurrences = new HashMap<>();
         int number;
         while ((number = scanner.nextInt()) != 0) {
-            if (!map.containsKey(number))
-                map.put(number, 1);
+            if (!occurrences.containsKey(number))
+                occurrences.put(number, 1);
             else
-                map.put(number, map.get(number) + 1);
+                occurrences.put(number, occurrences.get(number) + 1);
         }
+
+        int max = Collections.max(occurrences.values());
+        HashMap<Integer, Integer> highestOccurrences = new HashMap<>();
+        occurrences.forEach((key, value) -> {
+            if (value >= max)
+                highestOccurrences.put(key, value);
+        });
 
         System.out.println("Numbers with the max occurrences: ");
-        for (HashMap.Entry<Integer, Integer> numbers : getMostOccurrences(map).entrySet()) {
-
-            System.out.println(numbers.getKey() + " occurred " + numbers.getValue() + " times");
-        }
-
+        highestOccurrences.forEach((key, value) ->
+                System.out.println(key + " occurred " + value + " times"));
     }
 
-    public static HashMap<Integer, Integer> getMostOccurrences(Map<Integer, Integer> map) {
-
-        HashMap<Integer, Integer> mostOccur = new HashMap<>();
-
-        int highKey = 0;
-        for (HashMap.Entry<Integer, Integer> m : map.entrySet()) {
-
-            if (mostOccur.isEmpty()) {
-                highKey = m.getKey();
-                mostOccur.put(highKey, m.getValue());
-                continue;
-            }
-            int highValue = mostOccur.get(highKey);
-            int currentValue = m.getValue();
-
-            if (highValue < currentValue) {
-                mostOccur.clear();
-                highKey = m.getKey();
-                mostOccur.put(highKey, currentValue);
-            } else if (highValue == currentValue) {
-                mostOccur.put(m.getKey(), currentValue);
-            }
-        }
-        return mostOccur;
-    }
 
 }
