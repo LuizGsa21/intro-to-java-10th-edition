@@ -15,10 +15,11 @@ import java.util.*;
 public class Exercise_03 {
 
     public static void main(String[] args) throws Exception {
-//        Scanner input = new Scanner(System.in);
-//        System.out.print("Enter a Java source file: ");
-//        String filename = input.nextLine();
-        String filename = "/Users/Kernel/GitHub/intro-to-java-10th-edition/src/Chapter_21/Exercise_03.java";
+        Scanner input = new Scanner(System.in);
+        System.out.print("Enter a Java source file: ");
+        String filename = input.nextLine();
+        // test file
+        // String filename = "/Users/Kernel/GitHub/intro-to-java-10th-edition/src/Chapter_21/Exercise_03.java";
 
         File file = new File(filename);
         if (file.exists()) {
