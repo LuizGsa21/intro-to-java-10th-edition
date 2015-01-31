@@ -1,6 +1,6 @@
 package Chapter_24;
 
-import chapter19.GenericStack;
+import Chapter_19.GenericStack;
 
 public class TestStackQueue {
   public static void main(String[] args) {

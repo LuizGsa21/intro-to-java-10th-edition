@@ -1,6 +1,6 @@
 package Chapter_24;
 
-import chapter23.Heap;
+import Chapter_23.Heap;
 
 public class MyPriorityQueue<E extends Comparable<E>> {
   private Heap<E> heap = new Heap<E>();
