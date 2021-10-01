@@ -20,7 +20,7 @@ public class Exercise_16 {
         int num = input.nextInt();
         input.close();
 
-        for (int i = 2; i < num; ) {
+        for (int i = 2; i <= num; ) {
 
             if (num % i == 0) {
                 System.out.print(i +" ");
